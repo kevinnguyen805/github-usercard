@@ -24,7 +24,6 @@
           user, and adding that card to the DOM.
 */
 
-const followersArray = [];
 
 /* Step 3: Create a function that accepts a single object as its only argument,
           Using DOM methods and properties, create a component that will return the following DOM element:
@@ -64,7 +63,7 @@ function GitCard (obj){
   const username = document.createElement('p');
   const location = document.createElement('p');
   const profile = document.createElement('p');
-  const gitLink = document.createElement('a');
+  const address = document.createElement('a');
   const followers = document.createElement('p');
   const following = document.createElement('p');
   const bio = document.createElement('p');
@@ -75,7 +74,7 @@ function GitCard (obj){
   cardInfo.appendChild(username);
   cardInfo.appendChild(location);
   cardInfo.appendChild(profile);
-  profile.appendChild(gitLink);
+  profile.appendChild(address);
   cardInfo.appendChild(followers);
   cardInfo.appendChild(following);
   cardInfo.appendChild(bio);
@@ -84,24 +83,25 @@ function GitCard (obj){
   name.classList.add('name');
   username.classList.add('username');
 
-  profile.textContent = 'Profile:';
 
   // passing API object data
   image.src = obj.avatar_url;
   name.textContent = obj.name;
   username.textContent = obj.login;
-  location.textContent = obj.location;
-  gitLink.href = obj.html_url;
-  followers.textContent = obj.followers;
-  following.textContent = obj.following;
-  bio.textContent = obj.bio
+  location.textContent = 'Location: ' + obj.location;
+  address.href = obj.html_url;
+  followers.textContent = 'Followers: ' + obj.followers;
+  following.textContent = 'Following: ' + obj.following;
+  bio.textContent = 'Bio: ' + obj.bio
 
+  profile.textContent = 'Profile: ' + address;
+  
 
   return card
 }
 
-// API data
-/*
+
+/*       API Data
   image = avatar_url
   name = name *null*
   username = login
@@ -111,14 +111,28 @@ function GitCard (obj){
   following = following
   bio = bio *null
 */
+/*          Steps to Take
+  1. turn usernames to API urls
+  2. push each API url to axios.get('url')
+  set axios get and build an array - axios.get.then - put into array
+  3. proceed to do .then
+*/
 
 
-axios.get('https://api.github.com/users/kevinnguyen805')
-.then(response => {
-  console.log(response);
-  const newGitCard = GitCard(response.data);
-  cards.appendChild(newGitCard);
+let gitFollowers = ['kevinnguyen805', 'michaelharms6010', 'tetondan', 'ongkasit', 'umekow', 'timothydnguyen'];
+
+gitFollowers.map(item => {
+  axios.get(`https://api.github.com/users/${item}`)
+  .then(response => {
+    console.log(response);
+    const newGitCard = GitCard(response.data);
+    cards.appendChild(newGitCard);    
+  })
+  .catch(error => {
+    console.log("The Github data was not returned", error);
+  })
 })
-.catch(error => {
-  console.log('Git data was not returned', error);
-})
+
+
+
+
