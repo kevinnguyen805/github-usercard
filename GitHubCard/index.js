@@ -53,3 +53,72 @@ const followersArray = [];
   luishrd
   bigknell
 */
+
+const cards = document.querySelector('.cards')
+
+function GitCard (obj){
+  const card = document.createElement('div');
+  const image = document.createElement('img');
+  const cardInfo = document.createElement('div');
+  const name = document.createElement('h3');
+  const username = document.createElement('p');
+  const location = document.createElement('p');
+  const profile = document.createElement('p');
+  const gitLink = document.createElement('a');
+  const followers = document.createElement('p');
+  const following = document.createElement('p');
+  const bio = document.createElement('p');
+
+  card.appendChild(image);
+  card.appendChild(cardInfo);
+  cardInfo.appendChild(name);
+  cardInfo.appendChild(username);
+  cardInfo.appendChild(location);
+  cardInfo.appendChild(profile);
+  profile.appendChild(gitLink);
+  cardInfo.appendChild(followers);
+  cardInfo.appendChild(following);
+  cardInfo.appendChild(bio);
+
+  card.classList.add('card');
+  name.classList.add('name');
+  username.classList.add('username');
+
+  profile.textContent = 'Profile:';
+
+  // passing API object data
+  image.src = obj.avatar_url;
+  name.textContent = obj.name;
+  username.textContent = obj.login;
+  location.textContent = obj.location;
+  gitLink.href = obj.html_url;
+  followers.textContent = obj.followers;
+  following.textContent = obj.following;
+  bio.textContent = obj.bio
+
+
+  return card
+}
+
+// API data
+/*
+  image = avatar_url
+  name = name *null*
+  username = login
+  location = location *null*
+  gitLink = html_url
+  followers = followers
+  following = following
+  bio = bio *null
+*/
+
+
+axios.get('https://api.github.com/users/kevinnguyen805')
+.then(response => {
+  console.log(response);
+  const newGitCard = GitCard(response.data);
+  cards.appendChild(newGitCard);
+})
+.catch(error => {
+  console.log('Git data was not returned', error);
+})
