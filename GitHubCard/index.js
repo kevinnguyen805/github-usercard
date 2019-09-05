@@ -68,13 +68,20 @@ function GitCard (obj){
   const following = document.createElement('p');
   const bio = document.createElement('p');
 
+
+  profile.textContent = 'Profile: ' + address
+  const a = document.createElement('a');
+  a.href = obj.html_url;
+  a.textContent = obj.html_url;
+  profile.appendChild(a);
+
+
   card.appendChild(image);
   card.appendChild(cardInfo);
   cardInfo.appendChild(name);
   cardInfo.appendChild(username);
   cardInfo.appendChild(location);
   cardInfo.appendChild(profile);
-  profile.appendChild(address);
   cardInfo.appendChild(followers);
   cardInfo.appendChild(following);
   cardInfo.appendChild(bio);
@@ -83,56 +90,64 @@ function GitCard (obj){
   name.classList.add('name');
   username.classList.add('username');
 
-
   // passing API object data
   image.src = obj.avatar_url;
   name.textContent = obj.name;
   username.textContent = obj.login;
   location.textContent = 'Location: ' + obj.location;
-  address.href = obj.html_url;
   followers.textContent = 'Followers: ' + obj.followers;
   following.textContent = 'Following: ' + obj.following;
   bio.textContent = 'Bio: ' + obj.bio
-
-  profile.textContent = 'Profile: ' + address;
-  
 
   return card
 }
 
 
-/*       API Data
-  image = avatar_url
-  name = name *null*
-  username = login
-  location = location *null*
-  gitLink = html_url
-  followers = followers
-  following = following
-  bio = bio *null
-*/
-/*          Steps to Take
-  1. turn usernames to API urls
-  2. push each API url to axios.get('url')
-  set axios get and build an array - axios.get.then - put into array
-  3. proceed to do .then
-*/
 
 
-let gitFollowers = ['kevinnguyen805', 'michaelharms6010', 'tetondan', 'ongkasit', 'umekow', 'timothydnguyen'];
+/*                MVP PROJECT 
+let gitFollowers = ['kevinnguyen805', 'michaelharms6010', 'tetondan', 'ongkasit', 'umekow', 'timothydnguyen', 'dbriksza'];
 
 gitFollowers.map(item => {
   axios.get(`https://api.github.com/users/${item}`)
-  .then(response => {
-    console.log(response);
-    const newGitCard = GitCard(response.data);
-    cards.appendChild(newGitCard);    
-  })
-  .catch(error => {
-    console.log("The Github data was not returned", error);
-  })
+    .then(response => {
+      console.log(response);
+      const newGitCard = GitCard(response.data);
+      cards.appendChild(newGitCard);
+    })
+    .catch(error => {
+      console.log("The Github data was not returned", error);
+    })
 })
+*/
 
 
 
+//   STRETCH
 
+function gitFollowers (username){
+  let userFollowers = `https://api.github.com/users/${username}/followers`;
+  axios.get(userFollowers)
+  
+  .then(response =>{
+    let userFollowerData = response.data;
+
+    userFollowerData.map(item => {
+      axios.get(item.url)
+      
+      .then(response => {
+        console.log(response);
+        const newGitCard = GitCard(response.data);
+        cards.appendChild(newGitCard);
+      })
+      .catch(error => {
+        console.log("The Github data was not returned", error);
+      })
+    })
+  })
+    .catch(error => {
+      console.log("The Github data was not returned", error);
+    })
+}
+
+gitFollowers('kevinnguyen805')
