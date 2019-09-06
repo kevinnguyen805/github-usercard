@@ -24,7 +24,6 @@
           user, and adding that card to the DOM.
 */
 
-const followersArray = [];
 
 /* Step 3: Create a function that accepts a single object as its only argument,
           Using DOM methods and properties, create a component that will return the following DOM element:
@@ -53,3 +52,102 @@ const followersArray = [];
   luishrd
   bigknell
 */
+
+const cards = document.querySelector('.cards')
+
+function GitCard (obj){
+  const card = document.createElement('div');
+  const image = document.createElement('img');
+  const cardInfo = document.createElement('div');
+  const name = document.createElement('h3');
+  const username = document.createElement('p');
+  const location = document.createElement('p');
+  const profile = document.createElement('p');
+  const address = document.createElement('a');
+  const followers = document.createElement('p');
+  const following = document.createElement('p');
+  const bio = document.createElement('p');
+
+
+  profile.textContent = 'Profile: ' + address
+  const a = document.createElement('a');
+  a.href = obj.html_url;
+  a.textContent = obj.html_url;
+  profile.appendChild(a);
+
+
+  card.appendChild(image);
+  card.appendChild(cardInfo);
+  cardInfo.appendChild(name);
+  cardInfo.appendChild(username);
+  cardInfo.appendChild(location);
+  cardInfo.appendChild(profile);
+  cardInfo.appendChild(followers);
+  cardInfo.appendChild(following);
+  cardInfo.appendChild(bio);
+
+  card.classList.add('card');
+  name.classList.add('name');
+  username.classList.add('username');
+
+  // passing API object data
+  image.src = obj.avatar_url;
+  name.textContent = obj.name;
+  username.textContent = obj.login;
+  location.textContent = 'Location: ' + obj.location;
+  followers.textContent = 'Followers: ' + obj.followers;
+  following.textContent = 'Following: ' + obj.following;
+  bio.textContent = 'Bio: ' + obj.bio
+
+  return card
+}
+
+
+
+
+/*                MVP PROJECT 
+let gitFollowers = ['kevinnguyen805', 'michaelharms6010', 'tetondan', 'ongkasit', 'umekow', 'timothydnguyen', 'dbriksza'];
+
+gitFollowers.map(item => {
+  axios.get(`https://api.github.com/users/${item}`)
+    .then(response => {
+      console.log(response);
+      const newGitCard = GitCard(response.data);
+      cards.appendChild(newGitCard);
+    })
+    .catch(error => {
+      console.log("The Github data was not returned", error);
+    })
+})
+*/
+
+
+
+//   STRETCH
+
+function gitFollowers (username){
+  let userFollowers = `https://api.github.com/users/${username}/followers`;
+  axios.get(userFollowers)
+  
+  .then(response =>{
+    let userFollowerData = response.data;
+
+    userFollowerData.map(item => {
+      axios.get(item.url)
+      
+      .then(response => {
+        console.log(response);
+        const newGitCard = GitCard(response.data);
+        cards.appendChild(newGitCard);
+      })
+      .catch(error => {
+        console.log("The Github data was not returned", error);
+      })
+    })
+  })
+    .catch(error => {
+      console.log("The Github data was not returned", error);
+    })
+}
+
+gitFollowers('kevinnguyen805')
